@@ -1,12 +1,10 @@
 package com.crypto.services;
 
 import com.crypto.model.CryptoResponseData;
-import com.crypto.model.ResponseStatus;
+import com.crypto.model.CryptoResponseStatus;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
@@ -17,9 +15,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -27,9 +25,10 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CryptoPriceServiceTest {
 
     private static String apiKey = "";
@@ -37,7 +36,7 @@ public class CryptoPriceServiceTest {
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(CryptoPriceServiceTest.class);
 
 
-    @Before
+    @BeforeAll    
     public void setProperties(){
 
         Properties properties = new Properties();
@@ -55,7 +54,7 @@ public class CryptoPriceServiceTest {
     }
 
     @Test
-    public void testConnection(){
+    public void testConnectionSuccess(){
 
         String result = "";
         List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -71,7 +70,53 @@ public class CryptoPriceServiceTest {
             System.out.println("Error: Invalid URL " + e.toString());
         }
 
-        Assert.assertNotSame("", result);
+        assertNotSame("", result);
+    }
+
+    @Test
+    public void testMalformedRequest(){
+
+        String result = "";
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("start","1"));
+        params.add(new BasicNameValuePair("limit","2"));
+        params.add(new BasicNameValuePair("convert","bad parameter"));
+
+        try {
+            result = makeAPICall(uri, params);
+        } catch (IOException e) {
+            System.out.println("Error: cannont access content - " + e.toString());
+        } catch (URISyntaxException e) {
+            System.out.println("Error: Invalid URL " + e.toString());
+        }
+
+        JsonObject element = new Gson().fromJson(result, JsonObject.class);
+        JsonElement status = element.get("status");
+        Gson gson = new Gson();
+        CryptoResponseStatus responseStatus = gson.fromJson(status,CryptoResponseStatus.class);
+
+        assertEquals(400, responseStatus.getError_code());
+    }
+
+    @Test
+    public void testConnectionFailure(){
+
+        boolean success = false;
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("start","1"));
+        params.add(new BasicNameValuePair("limit","2"));
+        params.add(new BasicNameValuePair("convert","EUR"));
+
+        try {
+            makeAPICall("", params);
+            success = true;
+        } catch (IOException e) {
+            System.out.println("Error: cannont access content - " + e.toString());
+        } catch (URISyntaxException e) {
+            System.out.println("Error: Invalid URL " + e.toString());
+        }
+
+        assertNotEquals(success, true);
     }
 
     @Test
@@ -85,10 +130,10 @@ public class CryptoPriceServiceTest {
 
         Gson gson = new Gson();
         CryptoResponseData[] response = gson.fromJson(dataWrapper,CryptoResponseData[].class);
-        ResponseStatus status = gson.fromJson(statusWrapper,ResponseStatus.class);
+        CryptoResponseStatus status = gson.fromJson(statusWrapper, CryptoResponseStatus.class);
 
-        Assert.assertEquals(3, response.length);
-        Assert.assertNotNull(status.getTimestamp());
+        assertEquals(3, response.length);
+        assertNotNull(status.getTimestamp());
     }
 
     private String makeAPICall(String uri, List<NameValuePair> parameters)
