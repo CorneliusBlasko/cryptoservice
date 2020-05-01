@@ -16,6 +16,7 @@ import java.io.PrintWriter;
 )
 public class CryptoPriceServlet extends HttpServlet{
 
+    private final CryptoPriceService service = new CryptoPriceService();
 
     @Override
     protected void doGet(HttpServletRequest req,HttpServletResponse resp) throws IOException{
@@ -25,7 +26,6 @@ public class CryptoPriceServlet extends HttpServlet{
 
         CryptoRequestData requestData = gson.fromJson(reader, CryptoRequestData.class);
 
-        CryptoPriceService service = new CryptoPriceService();
         String response = service.doConnect(requestData.getStart(), requestData.getLimit(), requestData.getConvert());
 
         PrintWriter out = resp.getWriter();

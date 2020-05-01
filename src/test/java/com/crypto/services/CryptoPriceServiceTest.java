@@ -1,3 +1,5 @@
+package com.crypto.services;
+
 import com.crypto.model.CryptoResponseData;
 import com.crypto.model.ResponseStatus;
 import com.google.gson.Gson;
@@ -33,11 +35,15 @@ public class CryptoPriceServiceTest {
     private String uri;
 
     @Before
-    public void setApiKey(){
+    public void setProperties(){
+
         Properties properties = new Properties();
+        Properties keyProperties = new Properties();
+
         try{
             properties.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
-            apiKey = properties.getProperty("api.key");
+            keyProperties.load(getClass().getClassLoader().getResourceAsStream("secure.properties"));
+            apiKey = keyProperties.getProperty("api.key");
             uri = properties.getProperty("crypto.prices.uri");
         }catch(IOException e){
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,e.getMessage(),e);
