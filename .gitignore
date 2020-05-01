@@ -32,3 +32,9 @@ target/CryptoService/WEB-INF/lib/log4j-slf4j-impl-2.13.0.jar
 target/CryptoService/WEB-INF/web.xml
 
 target/test-classes/com/crypto/services/CryptoPriceServiceTest.class
+
+target/CryptoService/WEB-INF/classes/com/crypto/model/CryptoResponseStatus.class
+
+*.class
+
+target/CryptoService/WEB-INF/classes/META-INF/cryptonite.kotlin_module
