@@ -12,7 +12,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseStatus{
+public class CryptoResponseStatus {
 
     private Date timestamp;
     private int error_code;
