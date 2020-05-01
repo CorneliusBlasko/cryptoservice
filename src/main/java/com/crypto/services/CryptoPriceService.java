@@ -4,7 +4,6 @@ import com.crypto.model.CryptoResponseData;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
@@ -15,6 +14,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -28,9 +28,9 @@ public class CryptoPriceService {
 
     private String apiKey = "";
     private String uri = "";
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(CryptoPriceService.class);
 
     public String doConnect(String start, String limit, String convert) {
-
         Properties properties = new Properties();
         Properties keyProperties = new Properties();
 
@@ -52,9 +52,9 @@ public class CryptoPriceService {
         try {
             result = makeAPICall(uri, params);
         } catch (IOException e) {
-            System.out.println("Error: cannont access content - " + e.toString());
+            logger.error("Error: cannot access content - " + e);
         } catch (URISyntaxException e) {
-            System.out.println("Error: Invalid URL " + e.toString());
+            logger.error("Error: Invalid URL - " + e);
         }
         return result;
     }
@@ -83,21 +83,16 @@ public class CryptoPriceService {
             response.close();
         }
 
-
         return response_content;
     }
 
     private CryptoResponseData[] parseResponse(String content) throws IOException{
-
         JsonObject element = new Gson().fromJson(content, JsonObject.class);
-
         JsonElement data = element.get("data");
-
         Gson gson = new Gson();
         CryptoResponseData[] response = gson.fromJson(data,CryptoResponseData[].class);
 
         return response;
-
     }
 
 }
