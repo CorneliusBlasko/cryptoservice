@@ -19,6 +19,7 @@ import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -32,6 +33,8 @@ public class CryptoPriceServiceTest {
 
     private static String apiKey = "";
     private String uri;
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(CryptoPriceServiceTest.class);
+
 
     @Before
     public void setProperties(){
@@ -44,8 +47,9 @@ public class CryptoPriceServiceTest {
             keyProperties.load(getClass().getClassLoader().getResourceAsStream("secure.properties"));
             apiKey = keyProperties.getProperty("api.key");
             uri = properties.getProperty("crypto.prices.uri");
+            logger.info("Properties loaded");
         }catch(IOException e){
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE,e.getMessage(),e);
+            logger.error("Error: " + e);
         }
     }
 

@@ -1,6 +1,8 @@
 import com.crypto.model.CryptoRequestData;
 import com.crypto.services.CryptoPriceService;
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,21 +14,28 @@ import java.io.PrintWriter;
 
 @WebServlet(
         name = "cryptoservlet",
-        urlPatterns = "/CryptoPrices"
+        urlPatterns = "/cryptoprices"
 )
 public class CryptoPriceServlet extends HttpServlet{
 
+    private static Logger logger = LoggerFactory.getLogger(CryptoPriceServlet.class);
     private final CryptoPriceService service = new CryptoPriceService();
 
     @Override
-    protected void doGet(HttpServletRequest req,HttpServletResponse resp) throws IOException{
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException{
 
+        String response;
         BufferedReader reader = req.getReader();
         Gson gson = new Gson();
 
-        CryptoRequestData requestData = gson.fromJson(reader, CryptoRequestData.class);
-
-        String response = service.doConnect(requestData.getStart(), requestData.getLimit(), requestData.getConvert());
+        try {
+            CryptoRequestData requestData = gson.fromJson(reader, CryptoRequestData.class);
+            logger.info("Initiating crypto prices query");
+            response = service.doConnect(requestData.getStart(), requestData.getLimit(), requestData.getConvert());
+        }catch (Exception e){
+            logger.error("Error retrieving params from cryptoprices request. Error: " + e);
+            response = "Error retrieving params from cryptoprices. Error: " + e;
+        }
 
         PrintWriter out = resp.getWriter();
         resp.setContentType("application/json");
