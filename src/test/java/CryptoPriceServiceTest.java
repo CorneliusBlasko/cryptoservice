@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
@@ -67,8 +68,7 @@ public class CryptoPriceServiceTest {
     public void testParseResponse(){
         String str = "{\"status\":{\"timestamp\":\"2020-04-30T14:20:04.757Z\",\"error_code\":0,\"error_message\":null,\"elapsed\":11,\"credit_count\":1,\"notice\":null},\"data\":[{\"id\":1,\"name\":\"Bitcoin\",\"symbol\":\"BTC\",\"slug\":\"bitcoin\",\"num_market_pairs\":7997,\"date_added\":\"2013-04-28T00:00:00.000Z\",\"tags\":[\"mineable\"],\"max_supply\":21000000,\"circulating_supply\":18353512,\"total_supply\":18353512,\"platform\":null,\"cmc_rank\":1,\"last_updated\":\"2020-04-30T14:18:32.000Z\",\"quote\":{\"USD\":{\"price\":8849.96060035,\"volume_24h\":72540472164.7273,\"percent_change_1h\":0.26688,\"percent_change_24h\":6.46298,\"percent_change_7d\":21.501,\"market_cap\":162427858078.0509,\"last_updated\":\"2020-04-30T14:18:32.000Z\"}}},{\"id\":1027,\"name\":\"Ethereum\",\"symbol\":\"ETH\",\"slug\":\"ethereum\",\"num_market_pairs\":5163,\"date_added\":\"2015-08-07T00:00:00.000Z\",\"tags\":[\"mineable\"],\"max_supply\":null,\"circulating_supply\":110733523.999,\"total_supply\":110733523.999,\"platform\":null,\"cmc_rank\":2,\"last_updated\":\"2020-04-30T14:18:26.000Z\",\"quote\":{\"USD\":{\"price\":212.019867947,\"volume_24h\":29292026272.6805,\"percent_change_1h\":-0.0370262,\"percent_change_24h\":1.03547,\"percent_change_7d\":14.2834,\"market_cap\":23477707135.573933,\"last_updated\":\"2020-04-30T14:18:26.000Z\"}}},{\"id\":52,\"name\":\"XRP\",\"symbol\":\"XRP\",\"slug\":\"xrp\",\"num_market_pairs\":537,\"date_added\":\"2013-08-04T00:00:00.000Z\",\"tags\":[],\"max_supply\":100000000000,\"circulating_supply\":44112853111,\"total_supply\":99990976125,\"platform\":null,\"cmc_rank\":3,\"last_updated\":\"2020-04-30T14:18:04.000Z\",\"quote\":{\"USD\":{\"price\":0.217865583548,\"volume_24h\":3386493902.03635,\"percent_change_1h\":0.0529221,\"percent_change_24h\":-1.49211,\"percent_change_7d\":13.9503,\"market_cap\":9610672484.995222,\"last_updated\":\"2020-04-30T14:18:04.000Z\"}}}]}";
 
-        JsonParser parser = new JsonParser();
-        JsonObject element = (JsonObject)parser.parse(str);
+        JsonObject element = new Gson().fromJson(str, JsonObject.class);
 
         JsonElement dataWrapper = element.get("data");
         JsonElement statusWrapper = element.get("status");
