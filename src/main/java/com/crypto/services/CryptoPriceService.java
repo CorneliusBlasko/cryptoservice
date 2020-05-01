@@ -32,9 +32,12 @@ public class CryptoPriceService {
     public String doConnect(String start, String limit, String convert) {
 
         Properties properties = new Properties();
+        Properties keyProperties = new Properties();
+
         try{
             properties.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
-            apiKey = properties.getProperty("api.key");
+            keyProperties.load(getClass().getClassLoader().getResourceAsStream("secure.properties"));
+            apiKey = keyProperties.getProperty("api.key");
             uri = properties.getProperty("crypto.prices.uri");
         }catch(IOException e){
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,e.getMessage(),e);
@@ -86,8 +89,7 @@ public class CryptoPriceService {
 
     private CryptoResponseData[] parseResponse(String content) throws IOException{
 
-        JsonParser parser = new JsonParser();
-        JsonObject element = (JsonObject)parser.parse(content);
+        JsonObject element = new Gson().fromJson(content, JsonObject.class);
 
         JsonElement data = element.get("data");
 

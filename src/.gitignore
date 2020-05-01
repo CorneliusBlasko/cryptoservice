@@ -10,7 +10,10 @@ HELP.md
 .settings
 .springBeans
 .sts4-cache
-*.properties
+secure.properties
+.class
+.war
+target/
 
 ### IntelliJ IDEA ###
 .idea
