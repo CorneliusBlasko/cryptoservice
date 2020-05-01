@@ -6,28 +6,33 @@
     <!--<session-config>-->
     <!--    <tracking-mode>COOKIE</tracking-mode>-->
     <!--</session-config>-->
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>AuthServer</web-resource-name>
-            <url-pattern>/Server</url-pattern>
-        </web-resource-collection>
-        <user-data-constraint>
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint>
-    </security-constraint>
-    <context-param>
-        <param-name>quartz:shutdown-on-unload</param-name>
-        <param-value>true</param-value>
-        </context-param>
-    <context-param>
-        <param-name>quartz:wait-on-shutdown</param-name>
-        <param-value>false</param-value>
-    </context-param>
-    <context-param>
-        <param-name>quartz:start-scheduler-on-load</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <listener>
-        <listener-class>com.crypto.listeners.CryptoPriceListener</listener-class>
-    </listener>
+<!--    <security-constraint>-->
+<!--        <web-resource-collection>-->
+<!--            <web-resource-name>AuthServer</web-resource-name>-->
+<!--            <url-pattern>/Server</url-pattern>-->
+<!--        </web-resource-collection>-->
+<!--        <user-data-constraint>-->
+<!--            <transport-guarantee>CONFIDENTIAL</transport-guarantee>-->
+<!--        </user-data-constraint>-->
+<!--    </security-constraint>-->
+
+    <!-- ***************************************** -->
+    <!--  Job Scheduler registration and start-up  -->
+    <!--  For the time being it will remain stopped  -->
+
+<!--    <context-param>-->
+<!--        <param-name>quartz:shutdown-on-unload</param-name>-->
+<!--        <param-value>true</param-value>-->
+<!--        </context-param>-->
+<!--    <context-param>-->
+<!--        <param-name>quartz:wait-on-shutdown</param-name>-->
+<!--        <param-value>false</param-value>-->
+<!--    </context-param>-->
+<!--    <context-param>-->
+<!--        <param-name>quartz:start-scheduler-on-load</param-name>-->
+<!--        <param-value>true</param-value>-->
+<!--    </context-param>-->
+<!--    <listener>-->
+<!--        <listener-class>com.crypto.listeners.CryptoPriceListener</listener-class>-->
+<!--    </listener>-->
 </web-app>

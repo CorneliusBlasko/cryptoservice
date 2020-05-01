@@ -35,11 +35,11 @@ public class CryptoPriceListener implements ServletContextListener {
                     .withSchedule(SimpleScheduleBuilder.simpleSchedule()
                             .withIntervalInSeconds(3)
                             .repeatForever())
-//                .startAt(DateBuilder.futureDate(1, DateBuilder.IntervalUnit.SECOND))
                     .build();
 
             scheduler.scheduleJob(jobDetail, trigger);
-            scheduler.start();
+//            Deactivated for the time being
+//            scheduler.start();
         }
         catch (SchedulerException se)
         {
