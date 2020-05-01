@@ -89,8 +89,7 @@ public class CryptoPriceService {
 
     private CryptoResponseData[] parseResponse(String content) throws IOException{
 
-        JsonParser parser = new JsonParser();
-        JsonObject element = (JsonObject)parser.parse(content);
+        JsonObject element = new Gson().fromJson(content, JsonObject.class);
 
         JsonElement data = element.get("data");
 
