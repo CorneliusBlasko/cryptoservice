@@ -1,5 +1,5 @@
 import com.crypto.model.CryptoRequestData;
-import com.crypto.services.CryptoService;
+import com.crypto.services.CryptoPriceService;
 import com.google.gson.Gson;
 
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +14,7 @@ import java.io.PrintWriter;
         name = "cryptoservlet",
         urlPatterns = "/CryptoPrices"
 )
-public class CryptoServlet extends HttpServlet{
+public class CryptoPriceServlet extends HttpServlet{
 
 
     @Override
@@ -25,7 +25,7 @@ public class CryptoServlet extends HttpServlet{
 
         CryptoRequestData requestData = gson.fromJson(reader, CryptoRequestData.class);
 
-        CryptoService service = new CryptoService();
+        CryptoPriceService service = new CryptoPriceService();
         String response = service.doConnect(requestData.getStart(), requestData.getLimit(), requestData.getConvert());
 
         PrintWriter out = resp.getWriter();

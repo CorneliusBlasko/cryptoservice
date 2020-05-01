@@ -26,7 +26,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CryptoServiceTest{
+public class CryptoPriceServiceTest {
 
     private static String apiKey = "";
     private String uri;
