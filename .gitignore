@@ -8,3 +8,6 @@ secure.properties
 *.class
 
 .iml
+target/CryptoService.war
+
+target/CryptoService/WEB-INF/web.xml
