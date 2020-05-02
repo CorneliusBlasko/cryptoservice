@@ -30,6 +30,7 @@ public class CryptoPriceServlet extends HttpServlet{
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException{
         String response = "";
+        String error = "";
         BufferedReader reader = req.getReader();
         Gson gson = new Gson();
         CryptoRequestData requestData = gson.fromJson(reader, CryptoRequestData.class);
@@ -44,8 +45,9 @@ public class CryptoPriceServlet extends HttpServlet{
                 response = "Error. A service must be specified in the request.";
             }
         }catch (Exception e){
-            logger.error("Error retrieving params from cryptoprices request. Error: " + e);
-            response = "Error retrieving params from cryptoprices. Error: " + e;
+            error = "Error retrieving params from cryptoprices request. Error: " + e;
+            logger.error(error);
+            response = error;
         }
 
         PrintWriter out = resp.getWriter();
@@ -55,7 +57,4 @@ public class CryptoPriceServlet extends HttpServlet{
         out.print(response);
         out.flush();
     }
-
-
-
 }

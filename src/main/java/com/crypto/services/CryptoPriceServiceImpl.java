@@ -33,6 +33,7 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
     public String doConnect(String start, String limit, String convert) {
         Properties properties = new Properties();
         Properties keyProperties = new Properties();
+        String result = "";
 
         try{
             properties.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
@@ -43,7 +44,6 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,e.getMessage(),e);
         }
 
-        String result = "";
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("start",start));
         params.add(new BasicNameValuePair("limit",limit));
