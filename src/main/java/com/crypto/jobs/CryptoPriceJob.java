@@ -1,6 +1,6 @@
 package com.crypto.jobs;
 
-import com.crypto.services.CryptoPriceService;
+import com.crypto.services.CryptoPriceServiceImpl;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 
@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 public class CryptoPriceJob implements Job {
 
     private final static Logger LOGGER = Logger.getLogger(CryptoPriceJob.class.getName());
-    private final CryptoPriceService service = new CryptoPriceService();
+    private final CryptoPriceServiceImpl service = new CryptoPriceServiceImpl();
     private String start = "1";
     private String limit = "1";
     private String convert = "EUR";

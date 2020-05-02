@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CryptoRequestData{
 
+    private String service;
     private String start;
     private String limit;
     private String convert;
