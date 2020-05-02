@@ -22,7 +22,7 @@ public class CryptoPriceServlet extends HttpServlet{
     private final CryptoPriceService service = new CryptoPriceService();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException{
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException{
 
         String response;
         BufferedReader reader = req.getReader();
@@ -40,9 +40,9 @@ public class CryptoPriceServlet extends HttpServlet{
         PrintWriter out = resp.getWriter();
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
+        resp.addHeader("Access-Control-Allow-Origin", "*");
         out.print(response);
         out.flush();
-
     }
 
 }
