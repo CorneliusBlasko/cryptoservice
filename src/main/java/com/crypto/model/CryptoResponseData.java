@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -27,7 +28,7 @@ public class CryptoResponseData{
     private Platform platform;
     private String cmc_rank;
     private Date last_updated;
-    private Quote quote;
+    private Map<String, Currency> quote;
 
 
 }
