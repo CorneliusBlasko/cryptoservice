@@ -137,7 +137,7 @@ public class CryptoPriceServiceTest {
         CryptoResponseData[] response = gson.fromJson(dataWrapper,CryptoResponseData[].class);
         CryptoResponseStatus status = gson.fromJson(statusWrapper, CryptoResponseStatus.class);
 
-        assertEquals(3, response.length);
+        assertEquals(4, response.length);
         assertNotNull(status.getTimestamp());
     }
 

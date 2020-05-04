@@ -24,7 +24,7 @@ public class CryptoResponseData{
     private List<String> tags;
     private long circulating_supply;
     private long total_supply;
-    private String platform;
+    private Platform platform;
     private String cmc_rank;
     private Date last_updated;
     private Quote quote;
