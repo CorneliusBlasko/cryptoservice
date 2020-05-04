@@ -30,7 +30,7 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
     private String uri = "";
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(CryptoPriceServiceImpl.class);
 
-    public String doConnect(String start, String limit, String convert) {
+    public String doConnect(String start,String limit,String convert){
         Properties properties = new Properties();
         Properties keyProperties = new Properties();
         String result = "";
@@ -40,7 +40,8 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
             keyProperties.load(getClass().getClassLoader().getResourceAsStream("secure.properties"));
             apiKey = keyProperties.getProperty("api.key");
             uri = properties.getProperty("crypto.prices.uri");
-        }catch(IOException e){
+        }
+        catch(IOException e){
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,e.getMessage(),e);
         }
 
@@ -49,18 +50,19 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
         params.add(new BasicNameValuePair("limit",limit));
         params.add(new BasicNameValuePair("convert",convert));
 
-        try {
-            result = makeAPICall(uri, params);
-        } catch (IOException e) {
+        try{
+            result = makeAPICall(uri,params);
+        }
+        catch(IOException e){
             logger.error("Error: cannot access content - " + e);
-        } catch (URISyntaxException e) {
+        }
+        catch(URISyntaxException e){
             logger.error("Error: Invalid URL - " + e);
         }
         return result;
     }
 
-    private String makeAPICall(String uri, List<NameValuePair> parameters)
-            throws URISyntaxException, IOException {
+    private String makeAPICall(String uri,List<NameValuePair> parameters) throws URISyntaxException, IOException{
         String response_content = "";
 
         URIBuilder query = new URIBuilder(uri);
@@ -70,18 +72,19 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
         HttpGet request = new HttpGet(query.build());
 
         request.setHeader(HttpHeaders.ACCEPT,"application/json");
-        request.addHeader("X-CMC_PRO_API_KEY", apiKey);
+        request.addHeader("X-CMC_PRO_API_KEY",apiKey);
 
         CloseableHttpResponse response = client.execute(request);
 
-        try {
+        try{
             HttpEntity entity = response.getEntity();
             response_content = EntityUtils.toString(entity);
             EntityUtils.consume(entity);
 
             //Placeholder for future persistance
             CryptoResponseData[] responseObject = this.parseResponse(response_content);
-        } finally {
+        }
+        finally{
             response.close();
         }
 
@@ -89,7 +92,7 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
     }
 
     private CryptoResponseData[] parseResponse(String content){
-        JsonObject element = new Gson().fromJson(content, JsonObject.class);
+        JsonObject element = new Gson().fromJson(content,JsonObject.class);
         JsonElement data = element.get("data");
         Gson gson = new Gson();
         CryptoResponseData[] response = gson.fromJson(data,CryptoResponseData[].class);

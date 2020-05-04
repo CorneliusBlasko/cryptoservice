@@ -2,7 +2,10 @@ package com.crypto.services;
 
 import com.crypto.model.CryptoResponseData;
 import com.crypto.model.CryptoResponseStatus;
+import com.crypto.model.Currency;
+import com.crypto.model.Quote;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.http.HttpEntity;
@@ -24,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -133,9 +137,15 @@ public class CryptoPriceServiceTest {
         JsonElement dataWrapper = element.get("data");
         JsonElement statusWrapper = element.get("status");
 
-        Gson gson = new Gson();
-        CryptoResponseData[] response = gson.fromJson(dataWrapper,CryptoResponseData[].class);
-        CryptoResponseStatus status = gson.fromJson(statusWrapper, CryptoResponseStatus.class);
+        JsonArray dataArray = dataWrapper.getAsJsonArray();
+        CryptoResponseData responseData = new Gson().fromJson(dataArray.get(0), CryptoResponseData.class);
+
+        CryptoResponseData[] response = new Gson().fromJson(dataWrapper,CryptoResponseData[].class);
+        CryptoResponseStatus status = new Gson().fromJson(statusWrapper, CryptoResponseStatus.class);
+
+
+        List<CryptoResponseData> data = Arrays.asList(response);
+        Quote quote = data.get(0).getQuote();
 
         assertEquals(4, response.length);
         assertNotNull(status.getTimestamp());

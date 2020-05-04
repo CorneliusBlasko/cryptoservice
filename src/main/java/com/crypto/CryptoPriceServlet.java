@@ -15,10 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(
-        name = "cryptoservlet",
-        urlPatterns = "/cryptoprices"
-)
+@WebServlet(name = "cryptoservlet", urlPatterns = "/cryptoprices")
 public class CryptoPriceServlet extends HttpServlet{
 
     private static Logger logger = LoggerFactory.getLogger(CryptoPriceServlet.class);
@@ -28,23 +25,25 @@ public class CryptoPriceServlet extends HttpServlet{
     private final String CRYPTOPRICESERVICE = "cryptopriceservice";
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException{
+    protected void doPost(HttpServletRequest req,HttpServletResponse resp) throws IOException{
         String response = "";
         String error = "";
         BufferedReader reader = req.getReader();
         Gson gson = new Gson();
-        CryptoRequestData requestData = gson.fromJson(reader, CryptoRequestData.class);
+        CryptoRequestData requestData = gson.fromJson(reader,CryptoRequestData.class);
 
-        try {
+        try{
             if(null != requestData.getService()){
                 if(requestData.getService().equals(CRYPTOPRICESERVICE)){
                     response = cryptoPriceController.getCryptoPrices(requestData);
                 }
                 logger.info("Initiating crypto prices query");
-            }else{
+            }
+            else{
                 response = "Error. A service must be specified in the request.";
             }
-        }catch (Exception e){
+        }
+        catch(Exception e){
             error = "Error retrieving params from cryptoprices request. Error: " + e;
             logger.error(error);
             response = error;
@@ -53,7 +52,7 @@ public class CryptoPriceServlet extends HttpServlet{
         PrintWriter out = resp.getWriter();
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        resp.addHeader("Access-Control-Allow-Origin", "*");
+        resp.addHeader("Access-Control-Allow-Origin","*");
         out.print(response);
         out.flush();
     }
