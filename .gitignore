@@ -6,8 +6,5 @@ secure.properties
 */target/**
 
 *.class
-
+.target/
 .iml
-target/CryptoService.war
-
-target/CryptoService/WEB-INF/web.xml

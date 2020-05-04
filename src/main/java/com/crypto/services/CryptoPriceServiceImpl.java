@@ -88,7 +88,7 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
         return response_content;
     }
 
-    private CryptoResponseData[] parseResponse(String content) throws IOException{
+    private CryptoResponseData[] parseResponse(String content){
         JsonObject element = new Gson().fromJson(content, JsonObject.class);
         JsonElement data = element.get("data");
         Gson gson = new Gson();
