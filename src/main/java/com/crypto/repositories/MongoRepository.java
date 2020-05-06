@@ -1,8 +1,8 @@
 package com.crypto.repositories;
 
-import com.crypto.model.CryptoRequestData;
+import com.crypto.model.CryptoRequest;
 
 public interface MongoRepository{
 
-    void save(CryptoRequestData data);
+    void save(CryptoRequest data);
 }

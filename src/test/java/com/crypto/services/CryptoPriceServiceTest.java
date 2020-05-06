@@ -167,7 +167,6 @@ public class CryptoPriceServiceTest{
         CloseableHttpResponse response = client.execute(request);
 
         try{
-            //            System.out.println(response.getStatusLine());
             HttpEntity entity = response.getEntity();
             response_content = EntityUtils.toString(entity);
             EntityUtils.consume(entity);

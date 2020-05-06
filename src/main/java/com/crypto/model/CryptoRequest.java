@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CryptoRequestData{
+public class CryptoRequest{
 
     private String service;
     private String start;

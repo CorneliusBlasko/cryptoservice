@@ -1,6 +1,6 @@
 package com.crypto.controllers;
 
-import com.crypto.model.CryptoRequestData;
+import com.crypto.model.CryptoRequest;
 import com.crypto.services.CryptoPriceServiceImpl;
 
 public class CryptoPriceControllerImpl implements CryptoPriceController{
@@ -11,7 +11,7 @@ public class CryptoPriceControllerImpl implements CryptoPriceController{
         this.service = service;
     }
 
-    public String getCryptoPrices(CryptoRequestData requestData){
+    public String getCryptoPrices(CryptoRequest requestData){
         String response;
         response = service.doConnect(requestData.getStart(), requestData.getLimit(), requestData.getConvert());
         return response;

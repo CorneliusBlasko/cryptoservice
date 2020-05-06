@@ -1,6 +1,5 @@
 package com.crypto.model;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,14 +11,12 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Currency{
+public class CryptoQuote{
 
+    private String name;
+    private String symbol;
     private double price;
-    private double volume_24h;
-    private double percent_change_1h;
-    private double percent_change_24h;
-    private double percent_change_7d;
-    private double market_cap;
+    private double percent_change;
     private Date last_updated;
 
 }

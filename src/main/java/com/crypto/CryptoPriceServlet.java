@@ -1,7 +1,7 @@
 package com.crypto;
 
 import com.crypto.controllers.CryptoPriceControllerImpl;
-import com.crypto.model.CryptoRequestData;
+import com.crypto.model.CryptoRequest;
 import com.crypto.services.CryptoPriceServiceImpl;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ public class CryptoPriceServlet extends HttpServlet{
         String error = "";
         BufferedReader reader = req.getReader();
         Gson gson = new Gson();
-        CryptoRequestData requestData = gson.fromJson(reader,CryptoRequestData.class);
+        CryptoRequest requestData = gson.fromJson(reader,CryptoRequest.class);
 
         try{
             if(null != requestData.getService()){

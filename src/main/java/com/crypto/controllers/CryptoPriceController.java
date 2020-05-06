@@ -1,9 +1,9 @@
 package com.crypto.controllers;
 
-import com.crypto.model.CryptoRequestData;
+import com.crypto.model.CryptoRequest;
 
 public interface CryptoPriceController{
 
-    String getCryptoPrices(CryptoRequestData requestData);
+    String getCryptoPrices(CryptoRequest requestData);
 
 }
