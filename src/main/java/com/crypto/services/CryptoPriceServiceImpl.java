@@ -17,6 +17,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -25,33 +26,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CryptoPriceServiceImpl implements CryptoPriceService{
 
     private String apiKey = "";
     private String uri = "";
-    private static org.slf4j.Logger logger = LoggerFactory.getLogger(CryptoPriceServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(CryptoPriceServiceImpl.class);
     private final CryptoPriceRepository mongoRepository = new CryptoPriceRepository();
+    Properties properties = new Utils().getProperties();
+    Properties keyProperties = new Utils().getKeyProperties();
 
     public String processRequest(String start,String limit,String convert){
-        Properties properties = new Properties();
-        Properties keyProperties = new Properties();
         String processResult;
-        String result = "";
+        String result;
         List<CryptoResponseData> cryptoResponseData = new ArrayList<CryptoResponseData>();
-        List<CryptoQuote> quotes = new ArrayList<CryptoQuote>();
+        List<CryptoQuote> quotes;
 
-        try{
-            properties.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
-            keyProperties.load(getClass().getClassLoader().getResourceAsStream("secure.properties"));
-            apiKey = keyProperties.getProperty("api.key");
-            uri = properties.getProperty("crypto.prices.uri");
-        }
-        catch(IOException e){
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE,e.getMessage(),e);
-        }
+        apiKey = keyProperties.getProperty("api.key");
+        uri = properties.getProperty("crypto.prices.uri");
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("start",start));
@@ -113,9 +105,7 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
         JsonObject element = new Gson().fromJson(content,JsonObject.class);
         JsonElement data = element.get("data");
         Gson gson = new Gson();
-        CryptoResponseData[] response = gson.fromJson(data,CryptoResponseData[].class);
-
-        return response;
+        return gson.fromJson(data,CryptoResponseData[].class);
     }
 
     private String quotesToServiceResponse(List<CryptoQuote> quotes){

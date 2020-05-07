@@ -1,12 +1,12 @@
 package com.crypto.repositories;
 
 import com.crypto.model.CryptoQuote;
-import com.crypto.model.CryptoResponseData;
 import com.crypto.utils.Utils;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
@@ -14,11 +14,11 @@ import java.util.Properties;
 
 public class CryptoPriceRepository implements MongoRepository{
 
-    private static org.slf4j.Logger logger = LoggerFactory.getLogger(CryptoPriceRepository.class);
+    private static Logger logger = LoggerFactory.getLogger(CryptoPriceRepository.class);
 
     private MongoClient mongoClient;
     private MongoDatabase database;
-    private Properties properties = new Properties();
+    private final Properties properties = new Utils().getProperties();
     private String dbUrl;
     private String dbName;
     private String collectionName;

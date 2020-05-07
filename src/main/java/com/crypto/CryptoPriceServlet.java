@@ -3,6 +3,7 @@ package com.crypto;
 import com.crypto.controllers.CryptoPriceControllerImpl;
 import com.crypto.model.CryptoRequest;
 import com.crypto.services.CryptoPriceServiceImpl;
+import com.crypto.utils.Utils;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Properties;
 
 @WebServlet(name = "cryptoservlet", urlPatterns = "/cryptoprices")
 public class CryptoPriceServlet extends HttpServlet{
@@ -21,20 +23,19 @@ public class CryptoPriceServlet extends HttpServlet{
     private static Logger logger = LoggerFactory.getLogger(CryptoPriceServlet.class);
     private final CryptoPriceServiceImpl cryptoPriceService = new CryptoPriceServiceImpl();
     private final CryptoPriceControllerImpl cryptoPriceController = new CryptoPriceControllerImpl(cryptoPriceService);
-
-    private final String CRYPTOPRICESERVICE = "cryptopriceservice";
+    private final Properties properties = new Utils().getProperties();
 
     @Override
     protected void doPost(HttpServletRequest req,HttpServletResponse resp) throws IOException{
         String response = "";
-        String error = "";
+        String error;
         BufferedReader reader = req.getReader();
         Gson gson = new Gson();
         CryptoRequest requestData = gson.fromJson(reader,CryptoRequest.class);
 
         try{
             if(null != requestData.getService()){
-                if(requestData.getService().equals(CRYPTOPRICESERVICE)){
+                if(requestData.getService().equals(properties.getProperty("crypto.price.service"))){
                     response = cryptoPriceController.getCryptoPrices(requestData);
                 }
                 logger.info("Initiating crypto prices query");

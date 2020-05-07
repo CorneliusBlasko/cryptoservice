@@ -5,6 +5,7 @@ import com.crypto.model.CryptoResponseData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class Utils{
 
@@ -15,7 +16,6 @@ public class Utils{
     }
 
     public static List<CryptoQuote> CryptoResponseDataToQuote(List<CryptoResponseData> data,String convert){
-
         List<CryptoQuote> quotes = new ArrayList<CryptoQuote>();
 
         for(CryptoResponseData responseData : data){
@@ -31,5 +31,27 @@ public class Utils{
         }
 
         return quotes;
+    }
+
+    public Properties getProperties(){
+        Properties properties = new Properties();
+        try{
+            properties.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
+        }
+        catch(Exception e){
+
+        }
+        return properties;
+    }
+
+    public Properties getKeyProperties(){
+        Properties properties = new Properties();
+        try{
+            properties.load(getClass().getClassLoader().getResourceAsStream("secure.properties"));
+        }
+        catch(Exception e){
+
+        }
+        return properties;
     }
 }
