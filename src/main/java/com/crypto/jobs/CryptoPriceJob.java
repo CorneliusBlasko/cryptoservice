@@ -17,7 +17,7 @@ public class CryptoPriceJob implements Job {
 
     public void execute(JobExecutionContext jobExecutionContext){
 
-        String response = service.doConnect(start, limit, convert);
+        String response = service.processRequest(start,limit,convert);
 //        System.out.println("Request done");
 
     }

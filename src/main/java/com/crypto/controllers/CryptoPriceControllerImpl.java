@@ -13,7 +13,7 @@ public class CryptoPriceControllerImpl implements CryptoPriceController{
 
     public String getCryptoPrices(CryptoRequest requestData){
         String response;
-        response = service.doConnect(requestData.getStart(), requestData.getLimit(), requestData.getConvert());
+        response = service.processRequest(requestData.getStart(),requestData.getLimit(),requestData.getConvert());
         return response;
     }
 

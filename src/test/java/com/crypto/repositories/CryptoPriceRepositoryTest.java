@@ -23,10 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -38,15 +35,25 @@ public class CryptoPriceRepositoryTest{
 
     private MongoClient mongoClient;
     private MongoDatabase database;
-    private String DB_URL = "mongodb://localhost:27017";
-    private String DB_NAME = "crypto_test";
-    private String COLLECTION_NAME = "crypto_quote_test";
+    Properties properties = new Properties();
+    private String DB_URL;
+    private String DB_NAME;
+    private String COLLECTION_NAME;
 
     @BeforeAll
     public void connect(){
-        mongoClient = new MongoClient(new MongoClientURI(DB_URL));
-        database = mongoClient.getDatabase(DB_NAME);
-        database.getCollection(COLLECTION_NAME).deleteMany(new Document());
+        try{
+            properties.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
+            DB_NAME = properties.getProperty("crypto.db.quote.test");
+            DB_URL = properties.getProperty("crypto.db.url");
+            COLLECTION_NAME = properties.getProperty("crypto.db.quote.collection.test");
+
+            mongoClient = new MongoClient(new MongoClientURI(DB_URL));
+            database = mongoClient.getDatabase(DB_NAME);
+            database.getCollection(COLLECTION_NAME).deleteMany(new Document());
+        }catch(Exception e){
+            logger.error("Error: " + e);
+        }
 
     }
 
@@ -58,6 +65,7 @@ public class CryptoPriceRepositoryTest{
         document.put("name","Test name");
         document.put("symbol","Test symbol");
         document.put("price","Test price");
+        document.put("currency","Test currency");
         document.put("percent_change","Test percent change");
         document.put("timestamp",new Date().toString());
 
@@ -78,6 +86,7 @@ public class CryptoPriceRepositoryTest{
             quote.setName(responseData.getName());
             quote.setSymbol(responseData.getSymbol());
             quote.setPrice(responseData.getQuote().get("EUR").getPrice());
+            quote.setCurrency(getCurrencyFromQuote(responseData).get(0));
             quote.setPercent_change(responseData.getQuote().get("EUR").getPercent_change_24h());
             quote.setLast_updated(responseData.getQuote().get("EUR").getLast_updated());
 
@@ -85,6 +94,7 @@ public class CryptoPriceRepositoryTest{
             document.put("name",quote.getName());
             document.put("symbol",quote.getSymbol());
             document.put("price",quote.getPrice());
+            document.put("currency", quote.getCurrency());
             document.put("percent_change",quote.getPercent_change());
             document.put("timestamp",quote.getLast_updated());
 
@@ -120,7 +130,7 @@ public class CryptoPriceRepositoryTest{
             while(cursor.hasNext()){
                 Document document = cursor.next();
                 CryptoQuote quote = new CryptoQuote();
-                
+
                 quote.setName(document.getString("name"));
                 quote.setSymbol(document.getString("symbol"));
                 quote.setPrice(document.getDouble("price"));
@@ -136,6 +146,12 @@ public class CryptoPriceRepositoryTest{
         }
 
         return quotes;
+    }
+
+    private List<String> getCurrencyFromQuote(CryptoResponseData data){
+        List<String> currencies = new ArrayList<String>();
+        currencies.addAll(data.getQuote().keySet());
+        return currencies;
     }
 
 }
