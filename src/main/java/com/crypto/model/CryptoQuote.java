@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.util.Date;
 
@@ -13,10 +14,10 @@ import java.util.Date;
 @AllArgsConstructor
 public class CryptoQuote{
 
-    private String name;
-    private String symbol;
-    private double price;
-    private double percent_change;
-    private Date last_updated;
+    @BsonProperty("name") private String name;
+    @BsonProperty("symbol") private String symbol;
+    @BsonProperty("price") private double price;
+    @BsonProperty("percent_change") private double percent_change;
+    @BsonProperty("last_updated") private Date last_updated;
 
 }

@@ -4,7 +4,6 @@ import com.crypto.model.CryptoResponseData;
 import com.crypto.model.CryptoResponseStatus;
 import com.crypto.model.Currency;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.http.HttpEntity;

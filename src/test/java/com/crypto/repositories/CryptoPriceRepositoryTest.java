@@ -7,23 +7,34 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.core.util.IOUtils;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CryptoPriceRepositoryTest{
+
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(CryptoPriceRepositoryTest.class);
 
     private MongoClient mongoClient;
     private MongoDatabase database;
@@ -36,10 +47,13 @@ public class CryptoPriceRepositoryTest{
         mongoClient = new MongoClient(new MongoClientURI(DB_URL));
         database = mongoClient.getDatabase(DB_NAME);
         database.getCollection(COLLECTION_NAME).deleteMany(new Document());
+
     }
 
     @Test
+    @Order(1)
     public void testInsert(){
+        logger.info("Inserting dummy data into DB");
         Document document = new Document();
         document.put("name","Test name");
         document.put("symbol","Test symbol");
@@ -51,7 +65,9 @@ public class CryptoPriceRepositoryTest{
     }
 
     @Test
-    public void testPersistQuote(){
+    @Order(2)
+    public void testPersistAndRetrieveQuotes(){
+        logger.info("Inserting parsed data into DB");
         String response = parseResponse();
         JsonObject element = new Gson().fromJson(response,JsonObject.class);
         JsonElement dataWrapper = element.get("data");
@@ -75,6 +91,12 @@ public class CryptoPriceRepositoryTest{
             database.getCollection(COLLECTION_NAME).insertOne(document);
 
         }
+        logger.info("Retrieving DB data");
+        MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
+        List<CryptoQuote> quotes = getAllDocuments(collection);
+
+        assertNotSame(0,quotes.size());
+        assertEquals("Bitcoin",quotes.get(0).getName());
 
     }
 
@@ -88,6 +110,32 @@ public class CryptoPriceRepositoryTest{
         catch(Exception e){
             return "";
         }
+    }
+
+    private List<CryptoQuote> getAllDocuments(MongoCollection<Document> col){
+
+        List<CryptoQuote> quotes = new ArrayList<CryptoQuote>();
+        MongoCursor<Document> cursor = col.find().iterator();
+        try{
+            while(cursor.hasNext()){
+                Document document = cursor.next();
+                CryptoQuote quote = new CryptoQuote();
+                
+                quote.setName(document.getString("name"));
+                quote.setSymbol(document.getString("symbol"));
+                quote.setPrice(document.getDouble("price"));
+                quote.setPercent_change(document.getDouble("percent_change"));
+                quote.setLast_updated(document.getDate("timestamp"));
+
+                quotes.add(quote);
+
+            }
+        }
+        finally{
+            cursor.close();
+        }
+
+        return quotes;
     }
 
 }
