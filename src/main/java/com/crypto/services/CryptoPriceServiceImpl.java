@@ -1,7 +1,9 @@
 package com.crypto.services;
 
+import com.crypto.model.CryptoQuote;
 import com.crypto.model.CryptoResponseData;
 import com.crypto.repositories.CryptoPriceRepository;
+import com.crypto.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -39,6 +41,7 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
         String processResult;
         String result = "";
         List<CryptoResponseData> cryptoResponseData = new ArrayList<CryptoResponseData>();
+        List<CryptoQuote> quotes = new ArrayList<CryptoQuote>();
 
         try{
             properties.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
@@ -68,9 +71,11 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
             logger.error(processResult);
         }
 
-        mongoRepository.saveAll(cryptoResponseData,convert);
+        quotes = Utils.CryptoResponseDataToQuote(cryptoResponseData,convert);
 
-        return result;
+        mongoRepository.saveAll(quotes,convert);
+
+        return quotesToServiceResponse(quotes);
     }
 
     private String makeAPICall(String uri,List<NameValuePair> parameters) throws URISyntaxException, IOException{
@@ -111,6 +116,17 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
         CryptoResponseData[] response = gson.fromJson(data,CryptoResponseData[].class);
 
         return response;
+    }
+
+    private String quotesToServiceResponse(List<CryptoQuote> quotes){
+        StringBuilder builder = new StringBuilder();
+
+        for(CryptoQuote quote : quotes){
+            Gson gson = new Gson();
+            builder.append(gson.toJson(quote));
+        }
+
+        return builder.toString();
     }
 
 }

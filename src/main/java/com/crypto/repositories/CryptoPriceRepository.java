@@ -2,13 +2,13 @@ package com.crypto.repositories;
 
 import com.crypto.model.CryptoQuote;
 import com.crypto.model.CryptoResponseData;
+import com.crypto.utils.Utils;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -40,34 +40,21 @@ public class CryptoPriceRepository implements MongoRepository{
 
     }
 
-    public void saveAll(List<CryptoResponseData> data,String convert){
+    public void saveAll(List<CryptoQuote> quotes,String convert){
 
-        for(CryptoResponseData responseData : data){
-            CryptoQuote quote = new CryptoQuote();
-            quote.setName(responseData.getName());
-            quote.setSymbol(responseData.getSymbol());
-            quote.setCurrency(getCurrencyFromQuote(responseData).get(0));
-            quote.setPrice(responseData.getQuote().get(convert).getPrice());
-            quote.setPercent_change(responseData.getQuote().get(convert).getPercent_change_24h());
-            quote.setLast_updated(responseData.getQuote().get(convert).getLast_updated());
+        for(CryptoQuote quote : quotes){
 
             Document document = new Document();
             document.put("name",quote.getName());
             document.put("symbol",quote.getSymbol());
             document.put("price",quote.getPrice());
-            document.put("currency", quote.getCurrency());
+            document.put("currency",quote.getCurrency());
             document.put("percent_change",quote.getPercent_change());
             document.put("timestamp",quote.getLast_updated());
 
             database.getCollection(collectionName).insertOne(document);
 
         }
-    }
-
-    private List<String> getCurrencyFromQuote(CryptoResponseData data){
-        List<String> currencies = new ArrayList<String>();
-        currencies.addAll(data.getQuote().keySet());
-        return currencies;
     }
 
 

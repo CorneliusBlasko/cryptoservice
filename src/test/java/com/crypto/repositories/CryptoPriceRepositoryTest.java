@@ -110,6 +110,24 @@ public class CryptoPriceRepositoryTest{
 
     }
 
+    @Test
+    public void testSerialization(){
+        logger.info("Initiating serialization");
+        String response = parseResponse();
+        JsonObject element = new Gson().fromJson(response,JsonObject.class);
+        JsonElement dataWrapper = element.get("data");
+        List<CryptoResponseData> listData = Arrays.asList(new Gson().fromJson(dataWrapper,CryptoResponseData[].class));
+
+        StringBuilder json = new StringBuilder();
+        for(CryptoResponseData responseData : listData){
+            Gson gson = new Gson();
+            json.append(gson.toJson(responseData));
+        }
+
+        logger.info(json.toString());
+
+    }
+
     private String parseResponse(){
         try{
             File initialFile = new File("src/test/resources/response.txt");

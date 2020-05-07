@@ -1,10 +1,10 @@
 package com.crypto.repositories;
 
-import com.crypto.model.CryptoResponseData;
+import com.crypto.model.CryptoQuote;
 
 import java.util.List;
 
 public interface MongoRepository{
 
-    void saveAll(List<CryptoResponseData> data, String convert);
+    void saveAll(List<CryptoQuote> quotes,String convert);
 }
