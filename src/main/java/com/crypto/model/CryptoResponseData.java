@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -24,10 +25,10 @@ public class CryptoResponseData{
     private List<String> tags;
     private long circulating_supply;
     private long total_supply;
-    private String platform;
+    private Platform platform;
     private String cmc_rank;
     private Date last_updated;
-    private Quote quote;
+    private Map<String, Currency> quote;
 
 
 }

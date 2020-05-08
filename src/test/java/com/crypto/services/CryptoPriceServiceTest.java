@@ -2,6 +2,7 @@ package com.crypto.services;
 
 import com.crypto.model.CryptoResponseData;
 import com.crypto.model.CryptoResponseStatus;
+import com.crypto.model.Currency;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,21 +24,19 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class CryptoPriceServiceTest {
+public class CryptoPriceServiceTest{
 
     private static String apiKey = "";
     private String uri;
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(CryptoPriceServiceTest.class);
 
 
-    @BeforeAll    
+    @BeforeAll
     public void setProperties(){
 
         Properties properties = new Properties();
@@ -49,7 +48,8 @@ public class CryptoPriceServiceTest {
             apiKey = keyProperties.getProperty("api.key");
             uri = properties.getProperty("crypto.prices.uri");
             logger.info("Properties loaded");
-        }catch(IOException e){
+        }
+        catch(IOException e){
             logger.error("Error: " + e);
         }
     }
@@ -63,15 +63,17 @@ public class CryptoPriceServiceTest {
         params.add(new BasicNameValuePair("limit","2"));
         params.add(new BasicNameValuePair("convert","USD"));
 
-        try {
-            result = makeAPICall(uri, params);
-        } catch (IOException e) {
+        try{
+            result = makeAPICall(uri,params);
+        }
+        catch(IOException e){
             logger.error("Error: cannot access content - " + e);
-        } catch (URISyntaxException e) {
+        }
+        catch(URISyntaxException e){
             logger.error("Error: Invalid URL - " + e);
         }
 
-        assertNotSame("", result);
+        assertNotSame("",result);
     }
 
     @Test
@@ -83,20 +85,22 @@ public class CryptoPriceServiceTest {
         params.add(new BasicNameValuePair("limit","2"));
         params.add(new BasicNameValuePair("convert","bad parameter"));
 
-        try {
-            result = makeAPICall(uri, params);
-        } catch (IOException e) {
+        try{
+            result = makeAPICall(uri,params);
+        }
+        catch(IOException e){
             logger.error("Error: cannot access content - " + e);
-        } catch (URISyntaxException e) {
+        }
+        catch(URISyntaxException e){
             logger.error("Error: Invalid URL - " + e);
         }
 
-        JsonObject element = new Gson().fromJson(result, JsonObject.class);
+        JsonObject element = new Gson().fromJson(result,JsonObject.class);
         JsonElement status = element.get("status");
         Gson gson = new Gson();
         CryptoResponseStatus responseStatus = gson.fromJson(status,CryptoResponseStatus.class);
 
-        assertEquals(400, responseStatus.getError_code());
+        assertEquals(400,responseStatus.getError_code());
     }
 
     @Test
@@ -108,41 +112,46 @@ public class CryptoPriceServiceTest {
         params.add(new BasicNameValuePair("limit","2"));
         params.add(new BasicNameValuePair("convert","EUR"));
 
-        try {
-            makeAPICall("", params);
+        try{
+            makeAPICall("",params);
             success = true;
-        } catch (IOException e) {
+        }
+        catch(IOException e){
             logger.error("Error: cannot access content - " + e);
-        } catch (URISyntaxException e) {
+        }
+        catch(URISyntaxException e){
             logger.error("Error: Invalid URL - " + e);
         }
 
-        assertNotEquals(success, true);
+        assertNotEquals(success,true);
     }
 
     @Test
-    public void testParseResponse() throws IOException {
+    public void testParseResponse() throws IOException{
 
         File initialFile = new File("src/test/resources/response.txt");
         InputStream is = new FileInputStream(initialFile);
         InputStreamReader isReader = new InputStreamReader(is);
         String str = IOUtils.toString(isReader);
 
-        JsonObject element = new Gson().fromJson(str, JsonObject.class);
+        JsonObject element = new Gson().fromJson(str,JsonObject.class);
 
         JsonElement dataWrapper = element.get("data");
         JsonElement statusWrapper = element.get("status");
 
-        Gson gson = new Gson();
-        CryptoResponseData[] response = gson.fromJson(dataWrapper,CryptoResponseData[].class);
-        CryptoResponseStatus status = gson.fromJson(statusWrapper, CryptoResponseStatus.class);
+        CryptoResponseData[] response = new Gson().fromJson(dataWrapper,CryptoResponseData[].class);
+        CryptoResponseStatus status = new Gson().fromJson(statusWrapper,CryptoResponseStatus.class);
 
-        assertEquals(3, response.length);
+
+        List<CryptoResponseData> data = Arrays.asList(response);
+        Map<String,Currency> quote = data.get(0).getQuote();
+
+        assertEquals(4,response.length);
         assertNotNull(status.getTimestamp());
+        assertNotNull(quote.get("EUR"));
     }
 
-    private String makeAPICall(String uri, List<NameValuePair> parameters)
-            throws URISyntaxException, IOException {
+    private String makeAPICall(String uri,List<NameValuePair> parameters) throws URISyntaxException, IOException{
         String response_content = "";
 
         URIBuilder query = new URIBuilder(uri);
@@ -152,16 +161,16 @@ public class CryptoPriceServiceTest {
         HttpGet request = new HttpGet(query.build());
 
         request.setHeader(HttpHeaders.ACCEPT,"application/json");
-        request.addHeader("X-CMC_PRO_API_KEY", apiKey);
+        request.addHeader("X-CMC_PRO_API_KEY",apiKey);
 
         CloseableHttpResponse response = client.execute(request);
 
-        try {
-            //            System.out.println(response.getStatusLine());
+        try{
             HttpEntity entity = response.getEntity();
             response_content = EntityUtils.toString(entity);
             EntityUtils.consume(entity);
-        } finally {
+        }
+        finally{
             response.close();
         }
 
