@@ -1,40 +1,10 @@
 
-*.properties
+secure.properties
 
 .idea/
 
-target/classes/com/crypto/listeners/CryptoPriceListener.class
-
-target/classes/com/crypto/services/CryptoPriceService.class
-
-target/classes/CryptoPriceServlet.class
-
-target/classes/log4j2.xml
-
-target/CryptoService.war
-
-target/CryptoService/WEB-INF/classes/com/crypto/jobs/CryptoPriceJob.class
-
-target/CryptoService/WEB-INF/classes/com/crypto/listeners/CryptoPriceListener.class
-
-target/CryptoService/WEB-INF/classes/com/crypto/services/CryptoPriceService.class
-
-target/CryptoService/WEB-INF/classes/CryptoPriceServlet.class
-
-target/CryptoService/WEB-INF/classes/log4j2.xml
-
-target/CryptoService/WEB-INF/lib/log4j-api-2.13.0.jar
-
-target/CryptoService/WEB-INF/lib/log4j-core-2.13.0.jar
-
-target/CryptoService/WEB-INF/lib/log4j-slf4j-impl-2.13.0.jar
-
-target/CryptoService/WEB-INF/web.xml
-
-target/test-classes/com/crypto/services/CryptoPriceServiceTest.class
-
-target/CryptoService/WEB-INF/classes/com/crypto/model/CryptoResponseStatus.class
+*/target/**
 
 *.class
-
-target/CryptoService/WEB-INF/classes/META-INF/cryptonite.kotlin_module
+.target/
+.iml
