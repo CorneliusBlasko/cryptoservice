@@ -2,7 +2,7 @@ package com.crypto.services;
 
 import com.crypto.model.CryptoQuote;
 import com.crypto.model.CryptoResponseData;
-import com.crypto.repositories.CryptoPriceRepository;
+import com.crypto.repositories.MongoRepository;
 import com.crypto.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -32,7 +32,7 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
     private String apiKey = "";
     private String uri = "";
     private static Logger logger = LoggerFactory.getLogger(CryptoPriceServiceImpl.class);
-    private final CryptoPriceRepository mongoRepository = new CryptoPriceRepository();
+    private final MongoRepository mongoRepository = new MongoRepository();
     Properties properties = new Utils().getProperties();
     Properties keyProperties = new Utils().getKeyProperties();
 

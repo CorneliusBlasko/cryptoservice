@@ -7,7 +7,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
@@ -29,9 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class CryptoPriceRepositoryTest{
+public class MongoRepositoryTest{
 
-    private static org.slf4j.Logger logger = LoggerFactory.getLogger(CryptoPriceRepositoryTest.class);
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(MongoRepositoryTest.class);
 
     private MongoClient mongoClient;
     private MongoDatabase database;
