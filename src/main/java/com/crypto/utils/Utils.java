@@ -3,8 +3,10 @@ package com.crypto.utils;
 import com.crypto.model.CryptoQuote;
 import com.crypto.model.CryptoResponseData;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 
 public class Utils{
@@ -18,13 +20,15 @@ public class Utils{
     public static List<CryptoQuote> CryptoResponseDataToQuote(List<CryptoResponseData> data,String convert){
         List<CryptoQuote> quotes = new ArrayList<CryptoQuote>();
 
+        NumberFormat numberFormatter = NumberFormat.getNumberInstance(new Locale("es","ES"));
+
         for(CryptoResponseData responseData : data){
             CryptoQuote quote = new CryptoQuote();
             quote.setName(responseData.getName());
             quote.setSymbol(responseData.getSymbol());
             quote.setCurrency(Utils.getCurrencyFromQuote(responseData).get(0));
-            quote.setPrice(responseData.getQuote().get(convert).getPrice());
-            quote.setPercent_change(responseData.getQuote().get(convert).getPercent_change_24h());
+            quote.setPrice(numberFormatter.format(responseData.getQuote().get(convert).getPrice()));
+            quote.setPercent_change(numberFormatter.format(responseData.getQuote().get(convert).getPercent_change_24h()));
             quote.setLast_updated(responseData.getQuote().get(convert).getLast_updated());
 
             quotes.add(quote);

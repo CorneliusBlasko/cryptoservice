@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.NumberFormat;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -79,14 +80,15 @@ public class MongoRepositoryTest{
         JsonObject element = new Gson().fromJson(response,JsonObject.class);
         JsonElement dataWrapper = element.get("data");
         List<CryptoResponseData> listData = Arrays.asList(new Gson().fromJson(dataWrapper,CryptoResponseData[].class));
+        NumberFormat numberFormatter = NumberFormat.getNumberInstance(new Locale("es","ES"));
 
         for(CryptoResponseData responseData : listData){
             CryptoQuote quote = new CryptoQuote();
             quote.setName(responseData.getName());
             quote.setSymbol(responseData.getSymbol());
-            quote.setPrice(responseData.getQuote().get("EUR").getPrice());
+            quote.setPrice(numberFormatter.format(responseData.getQuote().get("EUR").getPrice()));
             quote.setCurrency(getCurrencyFromQuote(responseData).get(0));
-            quote.setPercent_change(responseData.getQuote().get("EUR").getPercent_change_24h());
+            quote.setPercent_change(numberFormatter.format(responseData.getQuote().get("EUR").getPercent_change_24h()));
             quote.setLast_updated(responseData.getQuote().get("EUR").getLast_updated());
 
             Document document = new Document();
@@ -143,6 +145,8 @@ public class MongoRepositoryTest{
 
         List<CryptoQuote> quotes = new ArrayList<CryptoQuote>();
         MongoCursor<Document> cursor = col.find().iterator();
+        NumberFormat numberFormatter = NumberFormat.getNumberInstance(new Locale("es","ES"));
+
         try{
             while(cursor.hasNext()){
                 Document document = cursor.next();
@@ -150,8 +154,8 @@ public class MongoRepositoryTest{
 
                 quote.setName(document.getString("name"));
                 quote.setSymbol(document.getString("symbol"));
-                quote.setPrice(document.getDouble("price"));
-                quote.setPercent_change(document.getDouble("percent_change"));
+                quote.setPrice(numberFormatter.format(document.getDouble("price")));
+                quote.setPercent_change(numberFormatter.format(document.getDouble("percent_change")));
                 quote.setLast_updated(document.getDate("timestamp"));
 
                 quotes.add(quote);
