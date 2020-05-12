@@ -22,10 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class CryptoPriceServiceImpl implements CryptoPriceService{
 
@@ -110,11 +107,19 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
 
     private String quotesToServiceResponse(List<CryptoQuote> quotes){
         StringBuilder builder = new StringBuilder();
+        Iterator<CryptoQuote> iterator = quotes.iterator();
 
-        for(CryptoQuote quote : quotes){
+        builder.append("{\"data\":[");
+
+        while(iterator.hasNext()){
             Gson gson = new Gson();
-            builder.append(gson.toJson(quote));
+            builder.append(gson.toJson(iterator.next()));
+            if(iterator.hasNext()){
+                builder.append(',');
+            }
+
         }
+        builder.append("]}");
 
         return builder.toString();
     }
