@@ -39,7 +39,7 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
         String processResult;
         String result;
         CryptoResponseStatus status;
-        List<CryptoResponseData> cryptoResponseData = new ArrayList<CryptoResponseData>();
+        List<CryptoResponseData> cryptoResponseData;
         List<CryptoQuote> quotes;
 
         apiKey = keyProperties.getProperty("api.key");
@@ -62,11 +62,7 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
                 return status.getError_message();
             }
         }
-        catch(IOException e){
-            processResult = "Error: " + e;
-            logger.error(processResult);
-        }
-        catch(URISyntaxException e){
+        catch(Exception e){
             processResult = "Error: " + e;
             logger.error(processResult);
         }
