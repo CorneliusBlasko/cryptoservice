@@ -2,6 +2,7 @@ package com.crypto.services;
 
 import com.crypto.model.CryptoQuote;
 import com.crypto.model.CryptoResponseData;
+import com.crypto.model.CryptoResponseStatus;
 import com.crypto.repositories.MongoRepository;
 import com.crypto.utils.Utils;
 import com.google.gson.Gson;
@@ -32,10 +33,12 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
     private final MongoRepository mongoRepository = new MongoRepository();
     Properties properties = new Utils().getProperties();
     Properties keyProperties = new Utils().getKeyProperties();
+    private static final String GENERIC_ERROR = "An unexpected error occured, please see server log";
 
     public String processRequest(String start,String limit,String convert){
         String processResult;
         String result;
+        CryptoResponseStatus status;
         List<CryptoResponseData> cryptoResponseData = new ArrayList<CryptoResponseData>();
         List<CryptoQuote> quotes;
 
@@ -49,7 +52,15 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
 
         try{
             result = makeAPICall(uri,params);
-            cryptoResponseData = Arrays.asList(this.parseResponse(result));
+            status = getCryptoResponseStatus(result);
+            if(status.getError_code() == 0){
+                cryptoResponseData = Arrays.asList(this.getCryptoResponseData(result));
+                quotes = Utils.CryptoResponseDataToQuote(cryptoResponseData,convert);
+                mongoRepository.saveAll(quotes,convert);
+                return quotesToServiceResponse(quotes);
+            } else {
+                return status.getError_message();
+            }
         }
         catch(IOException e){
             processResult = "Error: " + e;
@@ -60,11 +71,8 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
             logger.error(processResult);
         }
 
-        quotes = Utils.CryptoResponseDataToQuote(cryptoResponseData,convert);
+        return GENERIC_ERROR;
 
-        mongoRepository.saveAll(quotes,convert);
-
-        return quotesToServiceResponse(quotes);
     }
 
     private String makeAPICall(String uri,List<NameValuePair> parameters) throws URISyntaxException, IOException{
@@ -98,12 +106,20 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
 
     }
 
-    private CryptoResponseData[] parseResponse(String content){
+    private CryptoResponseStatus getCryptoResponseStatus(String content){
+        JsonObject element = new Gson().fromJson(content,JsonObject.class);
+        JsonElement data = element.get("status");
+        Gson gson = new Gson();
+        return gson.fromJson(data,CryptoResponseStatus.class);
+    }
+
+    private CryptoResponseData[] getCryptoResponseData(String content){
         JsonObject element = new Gson().fromJson(content,JsonObject.class);
         JsonElement data = element.get("data");
         Gson gson = new Gson();
         return gson.fromJson(data,CryptoResponseData[].class);
     }
+
 
     private String quotesToServiceResponse(List<CryptoQuote> quotes){
         StringBuilder builder = new StringBuilder();
@@ -116,10 +132,10 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
             builder.append(gson.toJson(iterator.next()));
             if(iterator.hasNext()){
                 builder.append(',');
+            } else{
+                builder.append("]}");
             }
-
         }
-        builder.append("]}");
 
         return builder.toString();
     }
