@@ -154,8 +154,9 @@ public class MongoRepositoryTest{
 
                 quote.setName(document.getString("name"));
                 quote.setSymbol(document.getString("symbol"));
-                quote.setPrice(numberFormatter.format(document.getDouble("price")));
-                quote.setPercent_change(numberFormatter.format(document.getDouble("percent_change")));
+                quote.setCurrency(document.getString("currency"));
+                quote.setPrice(document.getString("price"));
+                quote.setPercent_change(document.getString("percent_change"));
                 quote.setLast_updated(document.getDate("timestamp"));
 
                 quotes.add(quote);
