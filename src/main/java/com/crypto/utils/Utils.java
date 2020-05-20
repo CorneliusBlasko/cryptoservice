@@ -3,6 +3,7 @@ package com.crypto.utils;
 import com.crypto.model.Coin;
 import com.crypto.model.CryptoQuote;
 import com.crypto.model.CryptoResponseData;
+import org.bson.Document;
 
 import java.text.NumberFormat;
 import java.util.*;
@@ -61,5 +62,27 @@ public class Utils{
 
         }
         return properties;
+    }
+
+    public List<Coin> getCoinsFromDocument(Document document){
+
+        List<Document> coinList = (ArrayList<Document>) document.get("data");
+        List<Coin> coins = new ArrayList<>();
+
+        for(Document documentCoin : coinList){
+
+            Coin coin = new Coin();
+
+            coin.setName(documentCoin.getString("name"));
+            coin.setSymbol(documentCoin.getString("symbol"));
+            coin.setCurrency(documentCoin.getString("currency"));
+            coin.setPrice(documentCoin.getString("price"));
+            coin.setPercent_change(documentCoin.getString("percent_change"));
+            coin.setLast_updated(documentCoin.getDate("timestamp"));
+
+            coins.add(coin);
+        }
+
+        return coins;
     }
 }

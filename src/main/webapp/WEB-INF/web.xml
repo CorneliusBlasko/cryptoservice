@@ -16,9 +16,9 @@
 <!--        </user-data-constraint>-->
 <!--    </security-constraint>-->
 
-    <!-- ***************************************** -->
-    <!--  Job Scheduler registration and start-up  -->
-    <!--  For the time being it will remain stopped  -->
+<!--     ***************************************** -->
+<!--      Job Scheduler registration and start-up  -->
+<!--      For the time being it will remain stopped  -->
 
 <!--    <context-param>-->
 <!--        <param-name>quartz:shutdown-on-unload</param-name>-->

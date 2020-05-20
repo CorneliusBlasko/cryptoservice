@@ -2,6 +2,7 @@ package com.crypto.repositories;
 
 import com.crypto.model.Coin;
 import com.crypto.model.CryptoResponseData;
+import com.crypto.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -117,7 +118,8 @@ public class MongoRepositoryTest{
             coin.setSymbol(responseData.getSymbol());
             coin.setPrice(numberFormatter.format(responseData.getQuote().get(currency).getPrice()));
             coin.setCurrency(getCurrencyFromQuote(responseData).get(0));
-            coin.setPercent_change(numberFormatter.format(responseData.getQuote().get(currency).getPercent_change_24h()));
+            coin.setPercent_change(
+                    numberFormatter.format(responseData.getQuote().get(currency).getPercent_change_24h()));
             coin.setLast_updated(responseData.getQuote().get(currency).getLast_updated());
 
             Document coinDocument = new Document();
@@ -136,13 +138,21 @@ public class MongoRepositoryTest{
 
         database.getCollection(COLLECTION_NAME).insertOne(document);
         logger.info("Retrieving DB data");
-
         MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
 
-        List<Coin> coinList = getCoins(collection);
+        BasicDBObject searchQuery = new BasicDBObject().append("currency", "USD");
+        BasicDBObject sortObject = new BasicDBObject().append("_id", -1);
+        MongoCursor<Document> cursor = collection.find(searchQuery).iterator();
 
-        assertNotSame(0,coinList.size());
-        assertEquals("Bitcoin",coinList.get(0).getName());
+        Document result = collection.find(searchQuery).sort(sortObject).first();
+
+        List<Coin> coinsFromCursor = getCoinsFromCursor(cursor);
+        List<Coin> coinsFromDocument = new Utils().getCoinsFromDocument(result);
+
+        assertNotSame(0,coinsFromCursor.size());
+        assertEquals("Bitcoin",coinsFromCursor.get(0).getName());
+        assertEquals(4, coinsFromDocument.size());
+        assertEquals("USD", result.getString("currency"));
 
     }
 
@@ -176,31 +186,13 @@ public class MongoRepositoryTest{
         }
     }
 
-    private List<Coin> getCoins(MongoCollection<Document> col){
-
+    private List<Coin> getCoinsFromCursor(MongoCursor<Document> cursor){
         List<Coin> coins = new ArrayList<>();
-        MongoCursor<Document> cursor = col.find().iterator();
 
         try{
             while(cursor.hasNext()){
                 Document document = cursor.next();
-
-                List<Document> coinList = (ArrayList<Document>) document.get("data");
-
-                for(Document documentCoin : coinList){
-
-                    Coin coin = new Coin();
-
-                    coin.setName(documentCoin.getString("name"));
-                    coin.setSymbol(documentCoin.getString("symbol"));
-                    coin.setCurrency(documentCoin.getString("currency"));
-                    coin.setPrice(documentCoin.getString("price"));
-                    coin.setPercent_change(documentCoin.getString("percent_change"));
-                    coin.setLast_updated(documentCoin.getDate("timestamp"));
-
-                    coins.add(coin);
-                }
-
+                coins = new Utils().getCoinsFromDocument(document);
             }
         }
         finally{

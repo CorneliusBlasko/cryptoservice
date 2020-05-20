@@ -36,7 +36,7 @@ public class CryptoPriceServlet extends HttpServlet{
         try{
             if(null != requestData.getService()){
                 if(requestData.getService().equals(properties.getProperty("crypto.price.service"))){
-                    response = cryptoPriceController.getCryptoPrices(requestData);
+                    response = cryptoPriceController.getLastCoins(requestData);
                 }
                 logger.info("Initiating crypto prices query");
             }

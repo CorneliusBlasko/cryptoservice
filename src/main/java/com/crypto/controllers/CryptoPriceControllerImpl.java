@@ -12,8 +12,14 @@ public class CryptoPriceControllerImpl implements CryptoPriceController{
         this.service = service;
     }
 
+    //Este método queda para las llamadas automáticas a la API
     public String getCryptoPrices(CryptoRequest requestData){
         return service.processRequest(requestData.getStart(),requestData.getLimit(),requestData.getConvert());
+    }
+
+    //Este método gestiona las llamadas del front
+    public String getLastCoins(CryptoRequest requestData){
+        return service.getCoins(requestData.getConvert());
     }
 
 }
