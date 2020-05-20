@@ -151,6 +151,21 @@ public class CryptoPriceServiceTest{
         assertNotNull(quote.get("EUR"));
     }
 
+    @Test
+    public void testErrorResponse() throws IOException{
+        File initialFile = new File("src/test/resources/error.txt");
+        InputStream is = new FileInputStream(initialFile);
+        InputStreamReader isReader = new InputStreamReader(is);
+        String str = IOUtils.toString(isReader);
+
+        JsonObject element = new Gson().fromJson(str,JsonObject.class);
+        JsonElement statusWrapper = element.get("status");
+        CryptoResponseStatus status = new Gson().fromJson(statusWrapper,CryptoResponseStatus.class);
+
+        assertEquals(1001, status.getError_code());
+
+    }
+
     private String makeAPICall(String uri,List<NameValuePair> parameters) throws URISyntaxException, IOException{
         String response_content = "";
 

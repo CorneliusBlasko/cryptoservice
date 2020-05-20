@@ -1,10 +1,12 @@
 package com.crypto.repositories;
 
-import com.crypto.model.CryptoQuote;
+import com.crypto.model.Coin;
 import com.crypto.model.CryptoResponseData;
+import com.crypto.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
@@ -22,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.NumberFormat;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,8 +52,9 @@ public class MongoRepositoryTest{
 
             mongoClient = new MongoClient(new MongoClientURI(DB_URL));
             database = mongoClient.getDatabase(DB_NAME);
-            database.getCollection(COLLECTION_NAME).deleteMany(new Document());
-        }catch(Exception e){
+            //database.getCollection(COLLECTION_NAME).deleteMany(new Document());
+        }
+        catch(Exception e){
             logger.error("Error: " + e);
         }
 
@@ -61,12 +65,26 @@ public class MongoRepositoryTest{
     public void testInsert(){
         logger.info("Inserting dummy data into DB");
         Document document = new Document();
-        document.put("name","Test name");
-        document.put("symbol","Test symbol");
-        document.put("price","Test price");
-        document.put("currency","Test currency");
-        document.put("percent_change","Test percent change");
+        Document subDocumentOne = new Document();
+        Document subDocumentTwo = new Document();
+        List<Document> documents = new ArrayList<>();
         document.put("timestamp",new Date().toString());
+        document.put("currency","EUR");
+
+        subDocumentOne.put("name","Test name");
+        subDocumentOne.put("symbol","Test symbol");
+        subDocumentOne.put("price","Test price");
+        subDocumentOne.put("percent_change","Test percent change");
+
+        subDocumentTwo.put("name","Test name 2");
+        subDocumentTwo.put("symbol","Test symbol 2");
+        subDocumentTwo.put("price","Test price 2");
+        subDocumentTwo.put("percent_change","Test percent change 2");
+
+        documents.add(subDocumentOne);
+        documents.add(subDocumentTwo);
+
+        document.put("data",documents);
 
         database.getCollection(COLLECTION_NAME).insertOne(document);
     }
@@ -79,33 +97,62 @@ public class MongoRepositoryTest{
         JsonObject element = new Gson().fromJson(response,JsonObject.class);
         JsonElement dataWrapper = element.get("data");
         List<CryptoResponseData> listData = Arrays.asList(new Gson().fromJson(dataWrapper,CryptoResponseData[].class));
+        List<Document> coins = new ArrayList<>();
+        NumberFormat numberFormatter = NumberFormat.getNumberInstance(new Locale("es","ES"));
+
+        Document document = new Document();
+        document.put("timestamp",new Date().toString());
+
 
         for(CryptoResponseData responseData : listData){
-            CryptoQuote quote = new CryptoQuote();
-            quote.setName(responseData.getName());
-            quote.setSymbol(responseData.getSymbol());
-            quote.setPrice(responseData.getQuote().get("EUR").getPrice());
-            quote.setCurrency(getCurrencyFromQuote(responseData).get(0));
-            quote.setPercent_change(responseData.getQuote().get("EUR").getPercent_change_24h());
-            quote.setLast_updated(responseData.getQuote().get("EUR").getLast_updated());
+            Coin coin = new Coin();
+            String currency = "";
+            if(responseData.getQuote().containsKey("EUR")){
+                currency = "EUR";
+            }
+            if(responseData.getQuote().containsKey("USD")){
+                currency = "USD";
+            }
+            document.put("currency",currency);
+            coin.setName(responseData.getName());
+            coin.setSymbol(responseData.getSymbol());
+            coin.setPrice(numberFormatter.format(responseData.getQuote().get(currency).getPrice()));
+            coin.setCurrency(getCurrencyFromQuote(responseData).get(0));
+            coin.setPercent_change(
+                    numberFormatter.format(responseData.getQuote().get(currency).getPercent_change_24h()));
+            coin.setLast_updated(responseData.getQuote().get(currency).getLast_updated());
 
-            Document document = new Document();
-            document.put("name",quote.getName());
-            document.put("symbol",quote.getSymbol());
-            document.put("price",quote.getPrice());
-            document.put("currency", quote.getCurrency());
-            document.put("percent_change",quote.getPercent_change());
-            document.put("timestamp",quote.getLast_updated());
+            Document coinDocument = new Document();
+            coinDocument.put("name",coin.getName());
+            coinDocument.put("symbol",coin.getSymbol());
+            coinDocument.put("price",coin.getPrice());
+            coinDocument.put("currency",coin.getCurrency());
+            coinDocument.put("percent_change",coin.getPercent_change());
+            coinDocument.put("timestamp",coin.getLast_updated());
 
-            database.getCollection(COLLECTION_NAME).insertOne(document);
+            coins.add(coinDocument);
 
         }
+
+        document.put("data",coins);
+
+        database.getCollection(COLLECTION_NAME).insertOne(document);
         logger.info("Retrieving DB data");
         MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
-        List<CryptoQuote> quotes = getAllDocuments(collection);
 
-        assertNotSame(0,quotes.size());
-        assertEquals("Bitcoin",quotes.get(0).getName());
+        BasicDBObject searchQuery = new BasicDBObject().append("currency", "USD");
+        BasicDBObject sortObject = new BasicDBObject().append("_id", -1);
+        MongoCursor<Document> cursor = collection.find(searchQuery).iterator();
+
+        Document result = collection.find(searchQuery).sort(sortObject).first();
+
+        List<Coin> coinsFromCursor = getCoinsFromCursor(cursor);
+        List<Coin> coinsFromDocument = new Utils().getCoinsFromDocument(result);
+
+        assertNotSame(0,coinsFromCursor.size());
+        assertEquals("Bitcoin",coinsFromCursor.get(0).getName());
+        assertEquals(4, coinsFromDocument.size());
+        assertEquals("USD", result.getString("currency"));
 
     }
 
@@ -139,30 +186,20 @@ public class MongoRepositoryTest{
         }
     }
 
-    private List<CryptoQuote> getAllDocuments(MongoCollection<Document> col){
+    private List<Coin> getCoinsFromCursor(MongoCursor<Document> cursor){
+        List<Coin> coins = new ArrayList<>();
 
-        List<CryptoQuote> quotes = new ArrayList<CryptoQuote>();
-        MongoCursor<Document> cursor = col.find().iterator();
         try{
             while(cursor.hasNext()){
                 Document document = cursor.next();
-                CryptoQuote quote = new CryptoQuote();
-
-                quote.setName(document.getString("name"));
-                quote.setSymbol(document.getString("symbol"));
-                quote.setPrice(document.getDouble("price"));
-                quote.setPercent_change(document.getDouble("percent_change"));
-                quote.setLast_updated(document.getDate("timestamp"));
-
-                quotes.add(quote);
-
+                coins = new Utils().getCoinsFromDocument(document);
             }
         }
         finally{
             cursor.close();
         }
 
-        return quotes;
+        return coins;
     }
 
     private List<String> getCurrencyFromQuote(CryptoResponseData data){

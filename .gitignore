@@ -8,3 +8,5 @@ secure.properties
 *.class
 .target/
 .iml
+
+target/
