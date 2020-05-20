@@ -1,5 +1,6 @@
 package com.crypto.services;
 
+import com.crypto.model.Coin;
 import com.crypto.model.CryptoQuote;
 import com.crypto.model.CryptoResponseData;
 import com.crypto.model.CryptoResponseStatus;
@@ -8,6 +9,7 @@ import com.crypto.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mongodb.client.MongoCollection;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
@@ -18,6 +20,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +43,7 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
         String result;
         CryptoResponseStatus status;
         List<CryptoResponseData> cryptoResponseData;
-        List<CryptoQuote> quotes;
+        CryptoQuote quote;
 
         apiKey = keyProperties.getProperty("api.key");
         uri = properties.getProperty("crypto.prices.uri");
@@ -55,10 +58,11 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
             status = getCryptoResponseStatus(result);
             if(status.getError_code() == 0){
                 cryptoResponseData = Arrays.asList(this.getCryptoResponseData(result));
-                quotes = Utils.CryptoResponseDataToQuote(cryptoResponseData,convert);
-                mongoRepository.saveAll(quotes,convert);
-                return quotesToServiceResponse(quotes);
-            } else {
+                quote = Utils.CryptoResponseDataToQuote(cryptoResponseData,convert);
+                mongoRepository.saveAll(quote,convert);
+                return quoteToServiceResponse(quote);
+            }
+            else{
                 return status.getError_message();
             }
         }
@@ -102,6 +106,14 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
 
     }
 
+    private String getQuotes(String convert){
+
+        MongoCollection<Document> collection = mongoRepository.getByCurrency(convert);
+
+        return null;
+
+    }
+
     private CryptoResponseStatus getCryptoResponseStatus(String content){
         JsonObject element = new Gson().fromJson(content,JsonObject.class);
         JsonElement data = element.get("status");
@@ -117,19 +129,20 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
     }
 
 
-    private String quotesToServiceResponse(List<CryptoQuote> quotes){
+    private String quoteToServiceResponse(CryptoQuote quote){
         StringBuilder builder = new StringBuilder();
-        Iterator<CryptoQuote> iterator = quotes.iterator();
-
+        List<Coin> coins = quote.getData();
         builder.append("{\"data\":[");
 
-        while(iterator.hasNext()){
+        for(Coin coin : coins){
             Gson gson = new Gson();
-            builder.append(gson.toJson(iterator.next()));
-            if(iterator.hasNext()){
+            builder.append(gson.toJson(coin));
+            if(coins.indexOf(coin) != coins.size() - 1){
                 builder.append(',');
-            } else{
+            }
+            else{
                 builder.append("]}");
+
             }
         }
 
