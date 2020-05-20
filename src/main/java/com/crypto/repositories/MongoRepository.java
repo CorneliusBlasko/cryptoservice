@@ -70,13 +70,14 @@ public class MongoRepository implements Repository{
     }
 
     @Override
-    public MongoCollection<Document> getByCurrency(String convert){
-        //db.crypto_quote_test.find({"currency":"USD"}).sort({"timestamp": -1}).limit(1).pretty()
-        BasicDBObject query = new BasicDBObject();
-        BasicDBObject fields = new BasicDBObject("currency", convert);
+    public List<Coin> getLastQuoteByCurrency(String convert){
+        BasicDBObject searchQuery = new BasicDBObject().append("currency", convert);
+        BasicDBObject sortObject = new BasicDBObject().append("_id", -1);
         MongoCollection<Document> collection = database.getCollection(collectionName);
 
-        return null;
+        Document result = collection.find(searchQuery).sort(sortObject).first();
+
+        return new Utils().getCoinsFromDocument(result);
     }
 
 

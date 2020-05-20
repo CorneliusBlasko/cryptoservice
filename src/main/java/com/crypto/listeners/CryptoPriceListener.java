@@ -33,13 +33,14 @@ public class CryptoPriceListener implements ServletContextListener {
             SimpleTrigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity(TriggerKey.triggerKey("priceTrigger", "cryptoTriggerGroup"))
                     .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                            .withIntervalInSeconds(3)
+                            .withIntervalInSeconds(10)
                             .repeatForever())
                     .build();
 
             scheduler.scheduleJob(jobDetail, trigger);
-//            Deactivated for the time being
-//            scheduler.start();
+
+            //To deactivate the scheduler, comment the following line
+            //scheduler.start();
         }
         catch (SchedulerException se)
         {

@@ -60,7 +60,7 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
                 cryptoResponseData = Arrays.asList(this.getCryptoResponseData(result));
                 quote = Utils.CryptoResponseDataToQuote(cryptoResponseData,convert);
                 mongoRepository.saveAll(quote,convert);
-                return quoteToServiceResponse(quote);
+                return coinsToResponse(quote.getData());
             }
             else{
                 return status.getError_message();
@@ -106,11 +106,11 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
 
     }
 
-    private String getQuotes(String convert){
+    public String getCoins(String convert){
 
-        MongoCollection<Document> collection = mongoRepository.getByCurrency(convert);
+        List<Coin> coins = mongoRepository.getLastQuoteByCurrency(convert);
 
-        return null;
+        return coinsToResponse(coins);
 
     }
 
@@ -128,10 +128,8 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
         return gson.fromJson(data,CryptoResponseData[].class);
     }
 
-
-    private String quoteToServiceResponse(CryptoQuote quote){
+    private String coinsToResponse(List<Coin> coins){
         StringBuilder builder = new StringBuilder();
-        List<Coin> coins = quote.getData();
         builder.append("{\"data\":[");
 
         for(Coin coin : coins){
