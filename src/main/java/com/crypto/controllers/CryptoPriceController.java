@@ -4,7 +4,7 @@ import com.crypto.model.CryptoRequest;
 
 public interface CryptoPriceController{
 
-    String getCryptoPrices(CryptoRequest requestData);
+    String getCryptoPrices(String start, String limit, String currency);
     String getLastCoins(CryptoRequest requestData);
 
 }
