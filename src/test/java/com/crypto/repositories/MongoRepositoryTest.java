@@ -47,7 +47,8 @@ public class MongoRepositoryTest{
         try{
             properties.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
             DB_NAME = properties.getProperty("crypto.db.quote.test");
-            DB_URL = properties.getProperty("crypto.db.url.local");
+            DB_URL = properties.getProperty("crypto.db.url");
+//            DB_URL = properties.getProperty("crypto.db.url.local");
             COLLECTION_NAME = properties.getProperty("crypto.db.quote.collection.test");
 
             mongoClient = new MongoClient(new MongoClientURI(DB_URL));
@@ -86,6 +87,11 @@ public class MongoRepositoryTest{
         documents.add(subDocumentTwo);
 
         document.put("data",documents);
+
+        Gson gson = new Gson();
+        logger.info("URL: " + DB_URL);
+        logger.info("database: " + DB_NAME);
+        logger.info("collection: " + COLLECTION_NAME);
 
         database.getCollection(COLLECTION_NAME).insertOne(document);
     }
