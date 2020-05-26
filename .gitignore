@@ -3,10 +3,5 @@ secure.properties
 
 .idea/
 
-*/target/**
-
 *.class
-.target/
 .iml
-
-target/

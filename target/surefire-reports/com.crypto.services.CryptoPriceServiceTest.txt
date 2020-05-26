@@ -1,0 +1,20 @@
+-------------------------------------------------------------------------------
+Test set: com.crypto.services.CryptoPriceServiceTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.36 sec <<< FAILURE!
+com.crypto.services.CryptoPriceServiceTest.testConnectionSuccess()  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at java.base/java.net.URI$Parser.parse(URI.java:3127)
+	at java.base/java.net.URI.<init>(URI.java:623)
+	at org.apache.http.client.utils.URIBuilder.<init>(URIBuilder.java:82)
+	at com.crypto.services.CryptoPriceServiceTest.makeAPICall(CryptoPriceServiceTest.java:157)
+	at com.crypto.services.CryptoPriceServiceTest.testConnectionSuccess(CryptoPriceServiceTest.java:67)
+
+com.crypto.services.CryptoPriceServiceTest.testMalformedRequest()  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at java.base/java.net.URI$Parser.parse(URI.java:3127)
+	at java.base/java.net.URI.<init>(URI.java:623)
+	at org.apache.http.client.utils.URIBuilder.<init>(URIBuilder.java:82)
+	at com.crypto.services.CryptoPriceServiceTest.makeAPICall(CryptoPriceServiceTest.java:157)
+	at com.crypto.services.CryptoPriceServiceTest.testMalformedRequest(CryptoPriceServiceTest.java:89)
+

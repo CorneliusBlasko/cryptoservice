@@ -1,0 +1,122 @@
+{
+  "status": {
+    "timestamp": "2020-05-04T11:57:00.006Z",
+    "error_code": 0,
+    "error_message": null,
+    "elapsed": 12,
+    "credit_count": 1,
+    "notice": null
+  },
+  "data": [
+    {
+      "id": 1,
+      "name": "Bitcoin",
+      "symbol": "BTC",
+      "slug": "bitcoin",
+      "num_market_pairs": 8034,
+      "date_added": "2013-04-28T00:00:00.000Z",
+      "tags": ["mineable"],
+      "max_supply": 21000000,
+      "circulating_supply": 18361087,
+      "total_supply": 18361087,
+      "platform": null,
+      "cmc_rank": 1,
+      "last_updated": "2020-05-04T11:55:32.000Z",
+      "quote": {
+        "EUR": {
+          "price": 7970.211894055494,
+          "volume_24h": 42176936642.802925,
+          "percent_change_1h": 0.11644003,
+          "percent_change_24h": -2.30229928,
+          "percent_change_7d": 11.90839418,
+          "market_cap": 146341753995.1877,
+          "last_updated": "2020-05-04T11:56:00.000Z"
+        }
+      }
+    },
+    {
+      "id": 1027,
+      "name": "Ethereum",
+      "symbol": "ETH",
+      "slug": "ethereum",
+      "num_market_pairs": 5178,
+      "date_added": "2015-08-07T00:00:00.000Z",
+      "tags": ["mineable"],
+      "max_supply": null,
+      "circulating_supply": 110786711.374,
+      "total_supply": 110786711.374,
+      "platform": null,
+      "cmc_rank": 2,
+      "last_updated": "2020-05-04T11:55:28.000Z",
+      "quote": {
+        "EUR": {
+          "price": 184.64730695786466,
+          "volume_24h": 19367080412.301914,
+          "percent_change_1h": 0.13325678,
+          "percent_change_24h": -4.85096202,
+          "percent_change_7d": 2.26734954,
+          "market_cap": 20456467901.927334,
+          "last_updated": "2020-05-04T11:56:00.000Z"
+        }
+      }
+    },
+    {
+      "id": 52,
+      "name": "XRP",
+      "symbol": "XRP",
+      "slug": "xrp",
+      "num_market_pairs": 537,
+      "date_added": "2013-08-04T00:00:00.000Z",
+      "tags": [],
+      "max_supply": 100000000000,
+      "circulating_supply": 44112853111,
+      "total_supply": 99990976125,
+      "platform": null,
+      "cmc_rank": 3,
+      "last_updated": "2020-05-04T11:55:03.000Z",
+      "quote": {
+        "EUR": {
+          "price": 0.1951920634763638,
+          "volume_24h": 2145142317.4273245,
+          "percent_change_1h": -0.02224458,
+          "percent_change_24h": -2.97959346,
+          "percent_change_7d": 7.34452931,
+          "market_cap": 8610478824.565825,
+          "last_updated": "2020-05-04T11:56:00.000Z"
+        }
+      }
+    },
+    {
+      "id": 825,
+      "name": "Tether",
+      "symbol": "USDT",
+      "slug": "tether",
+      "num_market_pairs": 4764,
+      "date_added": "2015-02-25T00:00:00.000Z",
+      "tags": [],
+      "max_supply": null,
+      "circulating_supply": 6361032509,
+      "total_supply": 6998318752.17,
+      "platform": {
+        "id": 1027,
+        "name": "Ethereum",
+        "symbol": "ETH",
+        "slug": "ethereum",
+        "token_address": "31"
+      },
+      "cmc_rank": 4,
+      "last_updated": "2020-05-04T11:55:22.000Z",
+      "quote": {
+        "USD": {
+          "price": 0.9196389357407855,
+          "volume_24h": 54730039670.93442,
+          "percent_change_1h": -0.33130614,
+          "percent_change_24h": 1.36354699,
+          "percent_change_7d": -0.75822258,
+          "market_cap": 5849853166.789299,
+          "last_updated": "2020-05-04T11:56:00.000Z"
+        }
+      }
+    }
+  ]
+}

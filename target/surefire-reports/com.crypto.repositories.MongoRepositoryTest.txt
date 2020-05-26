@@ -1,0 +1,12 @@
+-------------------------------------------------------------------------------
+Test set: com.crypto.repositories.MongoRepositoryTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.102 sec <<< FAILURE!
+com.crypto.repositories.MongoRepositoryTest.testPersistAndRetrieveQuotes()  Time elapsed: 0.077 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.crypto.repositories.MongoRepositoryTest.testPersistAndRetrieveQuotes(MongoRepositoryTest.java:100)
+
+com.crypto.repositories.MongoRepositoryTest.testInsert()  Time elapsed: 0.004 sec  <<< FAILURE!
+java.lang.NullPointerException
+	at com.crypto.repositories.MongoRepositoryTest.testInsert(MongoRepositoryTest.java:71)
+
