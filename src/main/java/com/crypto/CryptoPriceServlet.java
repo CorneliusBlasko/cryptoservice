@@ -57,4 +57,14 @@ public class CryptoPriceServlet extends HttpServlet{
         out.print(response);
         out.flush();
     }
+
+    @Override
+    protected void doGet(HttpServletRequest req,HttpServletResponse resp) throws IOException{
+        PrintWriter out = resp.getWriter();
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.addHeader("Access-Control-Allow-Origin","*");
+        out.print("Service deployed successfully");
+        out.flush();
+    }
 }
