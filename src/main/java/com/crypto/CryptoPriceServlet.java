@@ -54,6 +54,7 @@ public class CryptoPriceServlet extends HttpServlet{
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.addHeader("Access-Control-Allow-Origin","*");
+        resp.addHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
         out.print(response);
         out.flush();
     }
@@ -64,6 +65,7 @@ public class CryptoPriceServlet extends HttpServlet{
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.addHeader("Access-Control-Allow-Origin","*");
+        resp.addHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
         out.print("Service deployed successfully");
         out.flush();
     }

@@ -16,13 +16,15 @@ public class CryptoPriceJob implements Job{
     private final CryptoPriceControllerImpl cryptoPriceController = new CryptoPriceControllerImpl(cryptoPriceService);
     private String start = "1";
     private String limit = "10";
-    private String convert = "USD";
+    private String USD = "USD";
+    private String EUR = "EUR";
 
     public void execute(JobExecutionContext jobExecutionContext){
 
         LOGGER.info("Executing scheduled job at " + new Date().toString());
         try{
-            cryptoPriceController.getCryptoPrices(start,limit,convert);
+            cryptoPriceController.getCryptoPrices(start,limit,USD);
+            cryptoPriceController.getCryptoPrices(start,limit,EUR);
 
         }
         catch(Exception e){

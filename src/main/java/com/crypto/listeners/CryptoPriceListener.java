@@ -1,7 +1,6 @@
 package com.crypto.listeners;
 
 import com.crypto.jobs.CryptoPriceJob;
-import lombok.SneakyThrows;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -33,7 +32,7 @@ public class CryptoPriceListener implements ServletContextListener {
             SimpleTrigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity(TriggerKey.triggerKey("priceTrigger", "cryptoTriggerGroup"))
                     .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                            .withIntervalInSeconds(600)
+                            .withIntervalInSeconds(3600)
                             .repeatForever())
                     .build();
 
@@ -44,7 +43,7 @@ public class CryptoPriceListener implements ServletContextListener {
         }
         catch (SchedulerException se)
         {
-            LOGGER.log(Level.SEVERE, "Exception: ", se);
+            LOGGER.log(Level.SEVERE, "SchedulerException: ", se);
         }
         catch (Exception e)
         {
