@@ -167,7 +167,7 @@ public class CryptoPriceServiceTest{
     }
 
     private String makeAPICall(String uri,List<NameValuePair> parameters) throws URISyntaxException, IOException{
-        String response_content = "";
+        String response_content;
 
         URIBuilder query = new URIBuilder(uri);
         query.addParameters(parameters);
