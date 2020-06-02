@@ -108,6 +108,8 @@ public class CryptoPriceServiceImpl implements CryptoPriceService{
 
     public String getCoins(String convert){
 
+        mongoRepository.saveLog(convert);
+
         List<Coin> coins = mongoRepository.getLastQuoteByCurrency(convert);
 
         return coinsToResponse(coins);

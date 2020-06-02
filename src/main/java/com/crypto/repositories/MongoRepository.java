@@ -26,7 +26,8 @@ public class MongoRepository implements Repository{
     private final Properties properties = new Utils().getProperties();
     private String dbUrl;
     private String dbName;
-    private String collectionName;
+    private String coinCollectionName;
+    private String logCollectionName;
 
     public MongoRepository(){
 
@@ -34,7 +35,8 @@ public class MongoRepository implements Repository{
             properties.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
             dbUrl = properties.getProperty("crypto.db.url");
             dbName = properties.getProperty("crypto.db.quote");
-            collectionName = properties.getProperty("crypto.db.quote.collection");
+            coinCollectionName = properties.getProperty("crypto.db.quote.collection");
+            logCollectionName = properties.getProperty("crypto.db.quote.log.collection");
 
             this.mongoClient = new MongoClient(new MongoClientURI(dbUrl));
             this.database = mongoClient.getDatabase(dbName);
@@ -66,18 +68,27 @@ public class MongoRepository implements Repository{
         }
 
         document.put("data",coins);
-        database.getCollection(collectionName).insertOne(document);
+        database.getCollection(coinCollectionName).insertOne(document);
     }
 
     @Override
     public List<Coin> getLastQuoteByCurrency(String convert){
         BasicDBObject searchQuery = new BasicDBObject().append("currency", convert);
         BasicDBObject sortObject = new BasicDBObject().append("_id", -1);
-        MongoCollection<Document> collection = database.getCollection(collectionName);
+        MongoCollection<Document> collection = database.getCollection(coinCollectionName);
 
         Document result = collection.find(searchQuery).sort(sortObject).first();
 
         return new Utils().getCoinsFromDocument(result);
+    }
+
+    @Override
+    public void saveLog(String convert){
+
+        Document document = new Document();
+        document.put("timestamp",new Date().toString());
+        document.put("currency",convert);
+        database.getCollection(logCollectionName).insertOne(document);
     }
 
 
