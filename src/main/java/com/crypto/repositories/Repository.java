@@ -12,4 +12,6 @@ public interface Repository{
     void saveAll(CryptoQuote quote,String convert);
 
     List<Coin> getLastQuoteByCurrency(String convert);
+
+    void saveLog(String convert);
 }
