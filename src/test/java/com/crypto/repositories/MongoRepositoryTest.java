@@ -48,12 +48,11 @@ public class MongoRepositoryTest{
             properties.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
             DB_NAME = properties.getProperty("crypto.db.quote.test");
             DB_URL = properties.getProperty("crypto.db.url");
-//            DB_URL = properties.getProperty("crypto.db.url.local");
             COLLECTION_NAME = properties.getProperty("crypto.db.quote.collection.test");
 
             mongoClient = new MongoClient(new MongoClientURI(DB_URL));
             database = mongoClient.getDatabase(DB_NAME);
-            //This line deletes all the collection content upon connection. Uncomment to start over each time
+            //This line deletes all the collection content right after connection. Uncomment to start over each time
             //database.getCollection(COLLECTION_NAME).deleteMany(new Document());
         }
         catch(Exception e){

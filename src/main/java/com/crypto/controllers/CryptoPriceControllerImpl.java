@@ -18,7 +18,7 @@ public class CryptoPriceControllerImpl implements CryptoPriceController{
         return service.processRequest(start, limit, currency);
     }
 
-    //This method manages the frontend requests
+    //This method manages the service requests
     @Override
     public String getLastCoins(CryptoRequest requestData){
         return service.getCoins(requestData.getConvert());
